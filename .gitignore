@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .npm
+.vscode-test/
 
 # Build output
 out/
@@ -28,3 +29,6 @@ pids
 # OS
 .DS_Store
 Thumbs.db
+
+# Added file
+test5.ods

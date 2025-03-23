@@ -199,29 +199,57 @@ export class SpreadsheetPanel {
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
 
+        // If we already have a panel, show it
         if (SpreadsheetPanel.currentPanel) {
             SpreadsheetPanel.currentPanel._panel.reveal(column);
             SpreadsheetPanel.currentPanel.updateContent(xmlContent);
             return;
         }
 
-        const panel = vscode.window.createWebviewPanel(
-            'odsSpreadsheet',
-            'ODS Spreadsheet',
-            column || vscode.ViewColumn.One,
-            {
-                enableScripts: true,
-                localResourceRoots: [vscode.Uri.file(path.join(extensionPath, 'media'))]
-            }
-        );
+        try {
+            // Create a new panel
+            const panel = vscode.window.createWebviewPanel(
+                'odsSpreadsheet', // Unique identifier
+                'ODS Spreadsheet', // Title displayed in the tab
+                column || vscode.ViewColumn.One,
+                {
+                    enableScripts: true,
+                    retainContextWhenHidden: true, // Keep the webview state when hidden
+                    localResourceRoots: [vscode.Uri.file(extensionPath)]
+                }
+            );
 
-        SpreadsheetPanel.currentPanel = new SpreadsheetPanel(panel, extensionPath);
-        SpreadsheetPanel.currentPanel.updateContent(xmlContent);
+            console.log('Created new webview panel');
+            SpreadsheetPanel.currentPanel = new SpreadsheetPanel(panel, extensionPath);
+            SpreadsheetPanel.currentPanel.updateContent(xmlContent);
+
+            // Handle panel disposal
+            panel.onDidDispose(
+                () => {
+                    SpreadsheetPanel.currentPanel = undefined;
+                },
+                null,
+                SpreadsheetPanel.currentPanel._disposables
+            );
+
+        } catch (error) {
+            console.error('Error creating webview panel:', error);
+            vscode.window.showErrorMessage(`Failed to create spreadsheet view: ${error}`);
+        }
     }
 
     public updateContent(xmlContent: string) {
-        this._currentXMLContent = xmlContent;
-        this._panel.webview.html = this._getWebviewContent();
+        try {
+            console.log('Updating webview content');
+            this._currentXMLContent = xmlContent;
+            const html = this._getWebviewContent();
+            console.log('Generated HTML content');
+            this._panel.webview.html = html;
+            console.log('Set webview HTML content');
+        } catch (error) {
+            console.error('Error updating content:', error);
+            vscode.window.showErrorMessage(`Failed to update spreadsheet view: ${error}`);
+        }
     }
 
     private _getWebviewContent() {
