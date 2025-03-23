@@ -1,0 +1,84 @@
+{
+    "name": "vscode-ods-editor",
+    "displayName": "ODS Editor",
+    "description": "Edit OpenDocument Spreadsheets (ODS) directly in VSCode with a modern spreadsheet interface. Built on LibreOffice's ODF format.",
+    "version": "0.0.1",
+    "publisher": "ods-editor",
+    "license": "MIT",
+    "icon": "images/snowcatman.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/YOUR_USERNAME/vscode-ods-editor.git"
+    },
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "ods",
+        "spreadsheet",
+        "libreoffice",
+        "openoffice",
+        "excel"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "vscode-ods-editor.openODS",
+                "title": "Open with ODS Editor",
+                "icon": "$(file)"
+            }
+        ],
+        "menus": {
+            "explorer/context": [{
+                "when": "resourceExtname == '.ods'",
+                "command": "vscode-ods-editor.openODS",
+                "group": "navigation"
+            }],
+            "editor/title": [{
+                "when": "resourceExtname == '.ods'",
+                "command": "vscode-ods-editor.openODS",
+                "group": "navigation"
+            }]
+        },
+        "languages": [
+            {
+                "id": "ods",
+                "extensions": [
+                    ".ods"
+                ],
+                "aliases": [
+                    "OpenDocument Spreadsheet",
+                    "ODS"
+                ]
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "uninstall": "node uninstall.js",
+        "package": "npx -y @vscode/vsce package",
+        "publish": "npx -y @vscode/vsce publish"
+    },
+    "devDependencies": {
+        "@types/node": "^16.18.34",
+        "@types/vscode": "^1.85.0",
+        "@types/adm-zip": "^0.5.5",
+        "@typescript-eslint/eslint-plugin": "^6.7.0",
+        "@typescript-eslint/parser": "^6.7.0",
+        "eslint": "^8.26.0",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "adm-zip": "^0.5.10",
+        "fast-xml-parser": "^4.3.4"
+    }
+}
